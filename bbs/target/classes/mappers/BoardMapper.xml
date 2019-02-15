@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="yjc.wdb.bbs.BoardMapper">
+<insert id="create">
+	insert into boards(title, content, writer)
+	values(#{title}, #{content}, #{writer})
+</insert>
+
+<select id="listAll" resultType="Board">
+	select * 
+	from boards
+	order by moddate desc
+</select>
+
+<select id="read" resultType="Board">
+	select *
+	from boards
+	where bno=#{bno}	
+</select>
+
+<update id="incReadCnt">
+	update boards set readcount=readcount+1 
+	where bno = #{bno}
+</update>
+
+<update id="update">
+	update boards set title=#{title}, content=#{content}, moddate=now()
+	where bno = #{bno}
+</update>
+
+<delete id="delete">
+	delete from boards
+	where bno = #{bno}
+</delete>
+
+<insert id="addAttach" useGeneratedKeys="true" keyProperty="id">
+	insert into attachments(bno, filename, mime, bytes) values(null, #{fileName}, #{mime}, #{bytes})
+</insert>
+
+</mapper>
