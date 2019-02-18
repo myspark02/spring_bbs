@@ -37,10 +37,23 @@
 		</div>		
 		<div class="form-group">
 			<label>조회수:</label> <span>${board.readcount}</span>
-		</div>				
+		</div>	
+		<div class="form-group">
+			<c:if test="${attachments!=null}">							
+				<label>첨부파일:</label>
+				<ul>
+					<c:forEach var="attach" items="${attachments}" >
+						<li>
+						<a href="resources/files/${board.writer}/${attach.fileName}">${attach.fileName}</a>
+						</li>
+					</c:forEach>
+				</ul>
+			</c:if>	
+		</div>					
 	</div>
 	<form method="post" action="delete">
 		<input type="hidden" name="bno" value="${board.bno}">
+		<input type="hidden" name="writer" value="${board.writer}">		
 	</form>
 	<div>
 	<c:if test="${userId==board.writer}">

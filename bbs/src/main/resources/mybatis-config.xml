@@ -6,6 +6,7 @@
  	<typeAliases>
  		<typeAlias alias="Board" type="yjc.wdb.bbs.bean.Board"/> 	
  		<typeAlias alias="Member" type="yjc.wdb.member.bean.Member"/>
+ 		<typeAlias alias="Attachment" type="yjc.wdb.bbs.bean.Attachment"/>
  	</typeAliases>
 </configuration>
 

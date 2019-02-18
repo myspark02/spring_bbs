@@ -2,6 +2,8 @@ package yjc.wdb.bbs.service;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
 
@@ -13,5 +15,8 @@ public interface BoardService {
 	public void delete(int bno) throws Exception;
 	public List<Board> listAll() throws Exception;
 	public Board read4update(int bno) throws Exception;
-	public void addAttach(Attachment vo) throws Exception;	
+	public void addAttach(Attachment vo) throws Exception;
+	public void assoicateAttachWithBoard(int bno, Integer[] attaches) throws Exception;
+	public List<Attachment> getAttaches(int bno)  throws Exception;
+	public void delAttaches(Integer[] attaches, HttpServletRequest request) throws Exception;	
 }

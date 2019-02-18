@@ -13,10 +13,13 @@
 <style>
 .error{color:red} 
 </style>
+<link rel="stylesheet" href="resources/dist/dropzone.css">
+<script src="resources/dist/dropzone.js"></script>
+<script src="resources/js/dropzoneAttach.js"></script>
 </head>
 <body>
 <div  style="margin: 10% 15%">
-	<form:form modelAttribute="board" action="update" method="post">
+	<form:form modelAttribute="board" action="update" method="post" id="register">
 		<div class="form-group">
 			<label>제목:</label> 
 			<form:input path="title" id="title" name="title" class="form-control" />
@@ -47,10 +50,36 @@
 		<div class="form-group">
 			<label>조회수:</label> <span>${board.readcount}</span>
 		</div>
-		<button type="submit" class="btn btn-warning">Modify</button>		
+		<!-- button type="submit" class="btn btn-warning">Modify</button>		
 		<button type="button" id="listPage" onclick="back()"
-			class="btn btn-primary">Cancel</button>				
+			class="btn btn-primary">Cancel</button -->			
+			
+		<div class="form-group">
+			<c:if test="${attachments!=null}">							
+				<label>첨부파일 삭제:</label>
+					<c:forEach var="attach" items="${attachments}" >						
+							<span class="label label-danger">${attach.fileName}</span>							
+							<input type="checkbox" value="${attach.id}" 
+												name="del_attachments[]">&nbsp;&nbsp;
+					</c:forEach>
+			</c:if>	
+		</div>	
+						
 	</form:form>
+	
+	<form action="attachFiles" 
+	      class="dropzone needsclick dz-clickable" style="margin:0% 10%"
+	      id="dropzone" method="post" enctype="multipart/form-data">
+		<div class="dz-message needsclick">
+			Drop files here or click to upload.
+		</div>  	      
+	</form>
+	<div style="margin:20px 40%" >
+		<button type="button" class="btn btn-primary"
+			onclick="$('#register').submit()">Modify</button>		
+		<button class="btn btn-primary" onclick="back()">Cancel</button>
+	</div>
+		
 </div>		
 <script>
 	function back() {

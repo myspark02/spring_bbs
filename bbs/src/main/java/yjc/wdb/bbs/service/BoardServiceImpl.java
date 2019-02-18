@@ -1,8 +1,10 @@
 package yjc.wdb.bbs.service;
 
-import java.util.List;
+import java.io.File;
+import java.util.*;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +53,37 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public void addAttach(Attachment vo) throws Exception {
 		dao.addAttach(vo);		
+	}
+
+	@Override
+	public void assoicateAttachWithBoard(int bno, Integer[] attaches) throws Exception {
+		dao.assoicateAttachWithBoard(bno, attaches);
+		
+	}
+
+	@Override
+	public List<Attachment> getAttaches(int bno) throws Exception {		
+		return dao.getAttaches(bno);
+	}
+
+	@Override
+	public void delAttaches(Integer[] attaches,  HttpServletRequest request) throws Exception {
+		/* 
+		 * 1. file system에서 파일 삭제
+		 * 2. DB에서 파일 정보 삭제
+		 */
+		String path = request.getSession().getServletContext().getRealPath("resources/files");
+		String uName = (String)request.getSession().getAttribute("userId");
+		if (uName == null) path = path+"/guest";
+		else path = path+"/"+uName;
+		File folder = new File(path);		
+		List<String> fnames = dao.getFileNames(attaches);
+		for (int i=0; i < fnames.size(); i++) {
+			File dest = new File(folder, fnames.get(i));
+			dest.delete();
+		}
+		
+		dao.delAttaches(attaches);
+		
 	}
 }

@@ -3,7 +3,8 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
   <mapper namespace="yjc.wdb.bbs.BoardMapper">
-<insert id="create">
+  
+<insert id="create" useGeneratedKeys="true" keyProperty="bno">
 	insert into boards(title, content, writer)
 	values(#{title}, #{content}, #{writer})
 </insert>
@@ -39,4 +40,32 @@
 	insert into attachments(bno, filename, mime, bytes) values(null, #{fileName}, #{mime}, #{bytes})
 </insert>
 
+<update id = "associateAttachWithBoard">
+	update attachments set bno = #{bno}
+	where id in 
+	<foreach item="id" index="idx" collection="list"
+					open="(" separator="," close=")" >
+				#{id}	
+	</foreach>
+</update>
+
+<select id="getAttaches" resultType="Attachment">
+	select * from attachments where bno = #{bno}
+</select>
+
+<delete id="delAttaches">
+	delete from attachments where id in
+	<foreach item="id" index="idx" collection="list"
+					open="(" separator="," close=")" >
+				#{id}	
+	</foreach>
+</delete>
+
+<select id = "getFileNames" resultType="String">
+	select filename from attachments where id in
+	<foreach item="id" index="idx" collection="list"
+				open="(" separator="," close=")" >
+		#{id}	
+	</foreach>
+</select>
 </mapper>

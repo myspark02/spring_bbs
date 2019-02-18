@@ -13,5 +13,9 @@ public interface BoardDao {
 		public void delete(int bno) throws Exception;
 		public List<Board> listAll() throws Exception;
 		public void incReadCnt(int bno) throws Exception;
-		public void addAttach(Attachment vo) throws Exception;		
+		public void addAttach(Attachment vo) throws Exception;
+		public void assoicateAttachWithBoard(int bno, Integer[] attaches)  throws Exception;
+		public List<Attachment> getAttaches(int bno)  throws Exception;
+		public void delAttaches(Integer[] attaches)  throws Exception;		
+		public List<String> getFileNames(Integer[] attaches) throws Exception;
 }

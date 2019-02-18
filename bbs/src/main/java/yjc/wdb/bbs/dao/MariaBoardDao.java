@@ -1,6 +1,6 @@
 package yjc.wdb.bbs.dao;
 
-import java.util.List;
+import java.util.*;
 
 import javax.inject.Inject;
 
@@ -54,4 +54,48 @@ public class MariaBoardDao implements BoardDao {
 		sqlSession.insert(namespace+".addAttach", vo);
 		
 	}
+
+	@Override
+	public void assoicateAttachWithBoard(int bno, Integer[] attaches) throws Exception {		
+		
+		AttachFileToBoard aftb = new AttachFileToBoard(bno, attaches);
+		sqlSession.update(namespace+".associateAttachWithBoard", aftb);
+	}
+
+	@Override
+	public List<Attachment> getAttaches(int bno) throws Exception {
+		return sqlSession.selectList(namespace+".getAttaches", bno);
+	}
+
+	@Override
+	public void delAttaches(Integer[] attaches) throws Exception {
+		List<Integer> list = Arrays.asList(attaches);
+		sqlSession.delete(namespace+".delAttaches", list);		
+	}
+
+	@Override
+	public List<String> getFileNames(Integer[] attaches) throws Exception {
+		List<Integer> list = Arrays.asList(attaches);
+		return sqlSession.selectList(namespace+".getFileNames", list);
+	}
 }
+
+class AttachFileToBoard {
+	private int bno;
+	private List<Integer> list;
+	
+	public AttachFileToBoard(int bno, Integer[] attaches) {		
+		this.bno = bno;
+		this.list = Arrays.asList(attaches);
+	}
+	
+	public int getBno() {
+		return bno;
+	}
+	
+	public List<Integer> getList() {
+		return list;
+	}	
+}
+
+
