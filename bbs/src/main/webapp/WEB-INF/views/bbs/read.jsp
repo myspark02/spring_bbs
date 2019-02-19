@@ -54,6 +54,7 @@
 	<form method="post" action="delete">
 		<input type="hidden" name="bno" value="${board.bno}">
 		<input type="hidden" name="writer" value="${board.writer}">		
+		<input type="hidden" name="page" value="${currentPage}">
 	</form>
 	<div>
 	<c:if test="${userId==board.writer}">
@@ -75,7 +76,7 @@
 		}
 	}
 	function go2List() {
-		window.location.href="listPage";
+		window.location.href="listPage?page=${currentPage}";
 	}
 </script>
 </body>

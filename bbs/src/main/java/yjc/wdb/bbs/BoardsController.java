@@ -18,6 +18,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
+import yjc.wdb.bbs.bean.Pagination;
 import yjc.wdb.bbs.service.BoardService;
 
 @Controller
@@ -50,19 +51,32 @@ public class BoardsController {
 	}
 	
 	@RequestMapping(value="listPage", method=RequestMethod.GET)
-	public String listPage(Model model) throws Exception  {
-		List<Board> list = service.listAll();
+	public String listPage(Model model, 
+			@RequestParam(value="page", defaultValue="1") int currentPage) throws Exception  {
+		Pagination p = new Pagination();
+		List<Board> list = service.listPage(currentPage, p.getNumOfArticlesPerPage());
 		model.addAttribute("list", list);
+		int totalCount = service.getTotalCount();
+		p.setTotalCount(totalCount);
+		p.setCurrentPage(currentPage);
+		model.addAttribute("pagination", p);
 		return "bbs/listPage";
 	}
 
 	@RequestMapping(value="read", method=RequestMethod.GET)
 	public String read(@RequestParam(value="bno", defaultValue="-1") int bno, 
-						Model model) throws Exception{
-		Board board = service.read(bno);
+						Model model, 
+						HttpServletRequest req, 
+						@RequestParam(value="page", defaultValue="1") int page) throws Exception{
+		String userId = (String)req.getSession().getAttribute("userId");
+		if (userId==null) userId = "guest";
+		Board board = service.read(userId, bno);
 		model.addAttribute("board", board);
 		List<Attachment> list = service.getAttaches(bno);
 		model.addAttribute("attachments", list);
+		int count = service.countArticles(bno); 
+		board.setReadcount(count);
+		model.addAttribute("currentPage", page);
 		System.out.println(board);
 		return "bbs/read";
 	}
@@ -99,7 +113,8 @@ public class BoardsController {
 	
 	@RequestMapping(value="delete", method=RequestMethod.POST)
 	public String delete(@RequestParam(value="bno", defaultValue="-1") int bno,
-							HttpServletRequest request) throws Exception {
+							HttpServletRequest request, 
+							@RequestParam(value="page", defaultValue="1") int currentPage) throws Exception {
 		List<Attachment> list = service.getAttaches(bno);
 		if (list != null && list.size() > 0) {
 			Integer[] attachments = new Integer[list.size()];
@@ -111,7 +126,7 @@ public class BoardsController {
 		
 		service.delete(bno);
 		
-		return "redirect:listPage";
+		return "redirect:listPage?page="+currentPage;
 	}
 	
 	@PostMapping("attachFiles") // @RequestMapping(value="attachFiles", method=RequestMethod.POST) 와 동일한 의미

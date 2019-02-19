@@ -68,4 +68,22 @@
 		#{id}	
 	</foreach>
 </select>
+
+<insert id="addUserArticle">
+	insert into usersArticles values(#{userId}, #{bno}, now())
+</insert>
+
+<select id="countArticles" resultType="Integer">
+	select count(*) from usersArticles where bno = #{bno}
+</select>
+
+<select id="listPage" resultType="Board">
+select * from boards order by moddate desc
+	limit #{startRecordIndex}, #{numOfRecords}
+</select>
+
+<select id="getTotalCount" resultType="Integer">
+	select count(*) from boards
+</select>
+
 </mapper>

@@ -49,7 +49,7 @@
 		<tr>
 			<td>${board.bno}</td>
 			<td>
-				<a href="read?bno=${board.bno}">
+				<a href="read?bno=${board.bno}&page=${pagination.currentPage}">
 					${board.title}
 				</a>
 			</td>
@@ -60,5 +60,34 @@
 		</tr>
 	</c:forEach>
 </table>	
+<div class="container">
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    <c:if test="${pagination.prevLink==true}">
+	    <li class="page-item">
+	      <a class="page-link" href="listPage?page=${pagination.startPage-1}" aria-label="Previous">
+	        <span aria-hidden="true">&laquo;</span>
+	        <span class="sr-only">Previous</span>
+	      </a>
+	    </li>
+	</c:if>
+	<c:forEach var="i" begin="${pagination.startPage}" 
+				end="${pagination.endPage}" step="1">
+		 <li class="page-item  ${pagination.currentPage==i?'active':''}">
+		 	<a class="page-link" 
+		 				href="listPage?page=${i}">${i}</a>
+		 </li>		
+	</c:forEach>
+    <c:if test="${pagination.nextLink==true}">
+	    <li class="page-item">
+	      <a class="page-link" href="listPage?page=${pagination.endPage+1}" aria-label="Next">
+	        <span aria-hidden="true">&raquo;</span>
+	        <span class="sr-only">Next</span>
+	      </a>
+	    </li>
+	 </c:if>   
+  </ul>
+</nav>
+</div>
 </body>
 </html>

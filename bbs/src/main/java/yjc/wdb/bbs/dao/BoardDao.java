@@ -18,4 +18,8 @@ public interface BoardDao {
 		public List<Attachment> getAttaches(int bno)  throws Exception;
 		public void delAttaches(Integer[] attaches)  throws Exception;		
 		public List<String> getFileNames(Integer[] attaches) throws Exception;
+		public void addUserArticle(String userId, int bno) throws Exception;
+		public int countArticles(int bno) throws Exception;
+		public List<Board> listPage(int currentPage, int numOfRecordsPerPage) throws Exception;
+		public int getTotalCount() throws Exception;
 }

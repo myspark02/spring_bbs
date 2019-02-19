@@ -78,6 +78,46 @@ public class MariaBoardDao implements BoardDao {
 		List<Integer> list = Arrays.asList(attaches);
 		return sqlSession.selectList(namespace+".getFileNames", list);
 	}
+
+	@Override
+	public void addUserArticle(String userId, int bno) throws Exception {
+		UserArticle ua = new UserArticle(userId, bno);
+		sqlSession.insert(namespace+".addUserArticle", ua);
+		
+	}
+
+	@Override
+	public int countArticles(int bno) throws Exception {
+		return sqlSession.selectOne(namespace+".countArticles", bno);
+	}
+
+	@Override
+	public List<Board> listPage(int currentPage, int numOfRecordsPerPage) throws Exception {
+		int startRecordIndex = (currentPage-1)*numOfRecordsPerPage;
+		HashMap<String, Integer> map = new HashMap<>();
+		map.put("startRecordIndex", startRecordIndex);
+		map.put("numOfRecords", numOfRecordsPerPage);
+		return sqlSession.selectList(namespace+".listPage", map);
+	}
+
+	@Override
+	public int getTotalCount() throws Exception {
+		return sqlSession.selectOne(namespace+".getTotalCount");
+	}
+}
+class UserArticle {
+	private String userId;
+	private int bno;
+	public UserArticle(String userId, int bno) {
+		this.userId = userId;
+		this.bno = bno;
+	}
+	public String getUserId() {
+		return userId;
+	}
+	public int getBno() {
+		return bno;
+	}
 }
 
 class AttachFileToBoard {

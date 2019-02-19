@@ -25,8 +25,12 @@ public class BoardServiceImpl implements BoardService {
 
 	@Transactional
 	@Override
-	public Board read(int bno) throws Exception {
-		dao.incReadCnt(bno);
+	public Board read(String userId, int bno) throws Exception {
+		try { 
+			// 이미 해당 레코드가 삽입되어 있으면 이 레코드는 삽입되지 않고 SQL Exception이 발생한다. 
+			dao.addUserArticle(userId, bno);
+			dao.incReadCnt(bno); // 위의 dao.addUserArticle() 메소드에서 Exception이 발생하지 않으면 실행 
+		} catch(Exception ignore) {/* 이 Exception은 무시하고 넘어간다.*/ }
 		return dao.read(bno);
 	}
 
@@ -39,7 +43,7 @@ public class BoardServiceImpl implements BoardService {
 	public void delete(int bno) throws Exception {
 		dao.delete(bno);
 	}
-
+ 
 	@Override
 	public List<Board> listAll() throws Exception {	
 		return dao.listAll();
@@ -85,5 +89,20 @@ public class BoardServiceImpl implements BoardService {
 		
 		dao.delAttaches(attaches);
 		
+	}
+
+	@Override
+	public int countArticles(int bno) throws Exception {
+		return dao.countArticles(bno);
+	}
+
+	@Override
+	public List<Board> listPage(int currentPage, int numOfRecordsPerPage) throws Exception {
+		return dao.listPage(currentPage, numOfRecordsPerPage);
+	}
+
+	@Override
+	public int getTotalCount() throws Exception {
+		return dao.getTotalCount();
 	}
 }
