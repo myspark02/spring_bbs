@@ -55,6 +55,8 @@
 		<input type="hidden" name="bno" value="${board.bno}">
 		<input type="hidden" name="writer" value="${board.writer}">		
 		<input type="hidden" name="page" value="${currentPage}">
+		<input type="hidden" name="filterBy" value="${search.filterBy}">
+		<input type="hidden" name="searchKey" value="${search.searchKey}">
 	</form>
 	<div>
 	<c:if test="${userId==board.writer}">
@@ -66,7 +68,7 @@
 </div>		
 <script>
 	function getUpdateForm(bno) {
-		window.location.href="update?bno="+bno;
+		window.location.href="update?bno="+bno+"&${search.getSearchParam()}";
 	}
 	function deleteReq() {
 		var r = confirm('Are you sure to delete?');
@@ -76,7 +78,7 @@
 		}
 	}
 	function go2List() {
-		window.location.href="listPage?page=${currentPage}";
+		window.location.href="listPage?page=${currentPage}&${search.getSearchParam()}";
 	}
 </script>
 </body>

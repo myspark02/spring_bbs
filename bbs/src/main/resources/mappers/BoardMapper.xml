@@ -86,4 +86,43 @@ select * from boards order by moddate desc
 	select count(*) from boards
 </select>
 
+<sql id="searchCondition">
+<if test="filterBy != null">
+	<if test="filterBy == 'Title'.toString()">
+		and title like concat('%', #{searchKey}, '%')
+	</if>
+	<if test="filterBy == 'Content'.toString()">
+		and content like concat('%', #{searchKey}, '%')
+	</if>
+	<if test="filterBy == 'Writer'.toString()">
+		and writer like concat('%', #{searchKey}, '%')
+	</if>
+	<if test="filterBy == 'all'.toString()">
+		and (
+				title like concat('%', #{searchKey}, '%')
+					or
+				content like concat('%', #{searchKey}, '%')
+					or
+				writer like concat('%', #{searchKey}, '%')
+			)		
+	</if>
+</if>
+</sql>
+
+<select id="searchBoard" resultType="Board">
+select * 
+from boards 
+where bno > 0
+<include refid="searchCondition"></include>
+order by moddate desc
+limit #{startRecordIndex}, #{numOfRecordsPerPage}
+</select>
+
+<select id="getSearchTotalCount" resultType="Integer">
+select count(*)
+from boards
+where bno > 0
+<include refid="searchCondition"></include>
+</select>
+
 </mapper>

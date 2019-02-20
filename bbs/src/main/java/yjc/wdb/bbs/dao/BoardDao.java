@@ -4,6 +4,7 @@ import java.util.List;
 
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
+import yjc.wdb.bbs.bean.SearchCondition;
 
 public interface BoardDao {
 	// CRUD: Create,Retrieve, Update, Delete
@@ -22,4 +23,7 @@ public interface BoardDao {
 		public int countArticles(int bno) throws Exception;
 		public List<Board> listPage(int currentPage, int numOfRecordsPerPage) throws Exception;
 		public int getTotalCount() throws Exception;
+		public List<Board> searchBoard(SearchCondition search) throws Exception;
+		public int getSearchTotalCount(SearchCondition search) throws Exception;
 }
+

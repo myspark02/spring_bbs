@@ -19,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
 import yjc.wdb.bbs.bean.Pagination;
+import yjc.wdb.bbs.bean.SearchCondition;
 import yjc.wdb.bbs.service.BoardService;
 
 @Controller
@@ -52,11 +53,18 @@ public class BoardsController {
 	
 	@RequestMapping(value="listPage", method=RequestMethod.GET)
 	public String listPage(Model model, 
-			@RequestParam(value="page", defaultValue="1") int currentPage) throws Exception  {
+			@RequestParam(value="page", defaultValue="1") int currentPage, 
+			@ModelAttribute("search") SearchCondition search) throws Exception  {
 		Pagination p = new Pagination();
-		List<Board> list = service.listPage(currentPage, p.getNumOfArticlesPerPage());
+		//List<Board> list = service.listPage(currentPage, p.getNumOfArticlesPerPage());
+		// Search 객체를 Pagination 객체의 프로퍼티로 추가하는 것이 더 바람직할 수 있으나, 그냥 따로 따로 구현함.
+		search.setCurrentPage(currentPage);
+		search.setNumOfRecordsPerPage(p.getNumOfArticlesPerPage());
+		List<Board> list = service.searchBoard(search);
+		
 		model.addAttribute("list", list);
-		int totalCount = service.getTotalCount();
+		// int totalCount = service.getTotalCount();
+		int totalCount = service.getSearchTotalCount(search);
 		p.setTotalCount(totalCount);
 		p.setCurrentPage(currentPage);
 		model.addAttribute("pagination", p);
@@ -67,7 +75,8 @@ public class BoardsController {
 	public String read(@RequestParam(value="bno", defaultValue="-1") int bno, 
 						Model model, 
 						HttpServletRequest req, 
-						@RequestParam(value="page", defaultValue="1") int page) throws Exception{
+						@RequestParam(value="page", defaultValue="1") int page,
+						@ModelAttribute("search") SearchCondition search) throws Exception{
 		String userId = (String)req.getSession().getAttribute("userId");
 		if (userId==null) userId = "guest";
 		Board board = service.read(userId, bno);
@@ -83,7 +92,8 @@ public class BoardsController {
 	
 	@RequestMapping(value="update", method=RequestMethod.GET)
 	public String updateForm(@RequestParam(value="bno", defaultValue="-1") int bno, 
-								Model model) throws Exception {
+								Model model,
+								@ModelAttribute("search") SearchCondition search) throws Exception {
 		Board board = service.read4update(bno);
 		model.addAttribute("board", board);
 		List<Attachment> list = service.getAttaches(bno);
@@ -96,7 +106,8 @@ public class BoardsController {
 	public String update(@Valid @ModelAttribute("board") Board board, BindingResult br,
 			@RequestParam(value="attachments[]", required=false) Integer[] attachments, 
 			@RequestParam(value="del_attachments[]", required=false) Integer[] del_attachments,
-			HttpServletRequest req) throws Exception {
+			HttpServletRequest req,
+			SearchCondition search) throws Exception {
 		// 사용자 입력에 대한 정당성 검사에서 오류가 발생한 경우, 게시글 수정 폼을 결과로 반환
 		if (br.hasErrors())
 			return "bbs/updateForm";
@@ -108,13 +119,16 @@ public class BoardsController {
 		if(del_attachments != null) { // 삭제할 첨부파일들의 id 배열
 			service.delAttaches(del_attachments, req);
 		}
-		return "redirect:read?bno="+board.getBno();
+		return "redirect:read?bno=" + board.getBno() +
+						"&filterBy="+search.getFilterBy() + 
+						"&searchKey="+search.getSearchKey();
 	}
 	
 	@RequestMapping(value="delete", method=RequestMethod.POST)
 	public String delete(@RequestParam(value="bno", defaultValue="-1") int bno,
 							HttpServletRequest request, 
-							@RequestParam(value="page", defaultValue="1") int currentPage) throws Exception {
+							@RequestParam(value="page", defaultValue="1") int currentPage,
+							SearchCondition search) throws Exception {
 		List<Attachment> list = service.getAttaches(bno);
 		if (list != null && list.size() > 0) {
 			Integer[] attachments = new Integer[list.size()];
@@ -126,7 +140,9 @@ public class BoardsController {
 		
 		service.delete(bno);
 		
-		return "redirect:listPage?page="+currentPage;
+		return "redirect:listPage?page=" + currentPage 
+						+ "&filterBy=" + search.getFilterBy() 
+						+ "&searchKey=" + search.getSearchKey();
 	}
 	
 	@PostMapping("attachFiles") // @RequestMapping(value="attachFiles", method=RequestMethod.POST) 와 동일한 의미

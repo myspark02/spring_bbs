@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
+import yjc.wdb.bbs.bean.SearchCondition;
 
 @Repository
 public class MariaBoardDao implements BoardDao {
@@ -103,6 +104,16 @@ public class MariaBoardDao implements BoardDao {
 	@Override
 	public int getTotalCount() throws Exception {
 		return sqlSession.selectOne(namespace+".getTotalCount");
+	}
+
+	@Override
+	public List<Board> searchBoard(SearchCondition search) throws Exception {
+		return sqlSession.selectList(namespace+".searchBoard", search);
+	}
+
+	@Override
+	public int getSearchTotalCount(SearchCondition search) throws Exception {
+		return sqlSession.selectOne(namespace+".getSearchTotalCount", search);
 	}
 }
 class UserArticle {

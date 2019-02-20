@@ -64,7 +64,11 @@
 					</c:forEach>
 			</c:if>	
 		</div>	
-						
+		
+		<input type="hidden" name="filterBy" 
+			value="${search.filterBy}">
+		<input type="hidden" name="searchKey" 
+			value="${search.searchKey}">						
 	</form:form>
 	
 	<form action="attachFiles" 
