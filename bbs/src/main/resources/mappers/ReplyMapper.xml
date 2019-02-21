@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="yjc.wdb.bbs.ReplyMapper">
+<select id="list" resultType="Reply">
+	select * 
+	from replies 
+	where bno=#{bno}
+	order by rno desc
+</select>
+
+<select id="replyCount" resultType="int">
+	select count(*) 
+	from replies
+	where bno= #{bno}
+</select>
+
+<insert id="create">
+	insert into replies(bno, content, replyer)
+	values(#{bno}, #{content}, #{replyer})
+</insert>
+
+<update id="update">
+	update replies set content=#{content}, 
+						modDate = now()
+	where rno=#{rno}					
+</update>
+
+<delete id="delete">
+	delete from replies where rno=#{rno}
+</delete>
+</mapper>
+  
+  
+  

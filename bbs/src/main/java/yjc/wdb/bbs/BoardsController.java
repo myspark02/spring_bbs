@@ -19,8 +19,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import yjc.wdb.bbs.bean.Attachment;
 import yjc.wdb.bbs.bean.Board;
 import yjc.wdb.bbs.bean.Pagination;
+import yjc.wdb.bbs.bean.Reply;
 import yjc.wdb.bbs.bean.SearchCondition;
 import yjc.wdb.bbs.service.BoardService;
+import yjc.wdb.bbs.service.ReplyService;
 
 @Controller
 @SessionAttributes("board")
@@ -28,6 +30,9 @@ public class BoardsController {
 
 	@Inject
 	private BoardService service;
+	
+	@Inject
+	private ReplyService replyService;
 	
 	@RequestMapping(value="create", method=RequestMethod.GET) 
 	public String getBoardForm(Model model) {
@@ -86,6 +91,8 @@ public class BoardsController {
 		int count = service.countArticles(bno); 
 		board.setReadcount(count);
 		model.addAttribute("currentPage", page);
+		List<Reply> replies = replyService.list(bno);
+		model.addAttribute("replies", replies);
 		System.out.println(board);
 		return "bbs/read";
 	}
