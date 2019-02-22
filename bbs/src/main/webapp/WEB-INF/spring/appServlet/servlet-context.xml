@@ -25,6 +25,8 @@
 	</beans:bean>
 	<beans:bean id="updateNDeleteBoardInterceptor" class="yjc.wdb.bbs.interceptor.UpdateNDeleteBoardInterceptor">
 	</beans:bean>
+	<beans:bean id="updateNDeleteReplyInterceptor" class="yjc.wdb.bbs.interceptor.UpdateNDeleteReplyInterceptor">
+	</beans:bean>
 	<interceptors>
 		<interceptor>
 			<mapping path="/create"/>
@@ -37,7 +39,11 @@
 		<interceptor>
 			<mapping path="/delete"/>
 			<beans:ref bean="updateNDeleteBoardInterceptor"/>
-		</interceptor>				
+		</interceptor>
+		<interceptor>
+			<mapping path="/reply/*"/>
+			<beans:ref bean="updateNDeleteReplyInterceptor"/>
+		</interceptor>							
 	</interceptors>
 	
 	<beans:bean id="multipartResolver" 

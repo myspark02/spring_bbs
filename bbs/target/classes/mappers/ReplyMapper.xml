@@ -29,6 +29,12 @@
 <delete id="delete">
 	delete from replies where rno=#{rno}
 </delete>
+
+<select id="getReply" resultType="Reply">
+	select *
+	from replies
+	where rno = #{rno}
+</select>
 </mapper>
   
   

@@ -10,4 +10,5 @@ public interface ReplyDao {
 	public void update(Reply reply) throws Exception;
 	public void delete(int rno) throws Exception;
 	public int replyCount(int bno) throws Exception;
+	public Reply getReply(int rno) throws Exception;
 }

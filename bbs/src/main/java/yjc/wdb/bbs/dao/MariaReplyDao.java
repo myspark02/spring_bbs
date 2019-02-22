@@ -36,4 +36,9 @@ public class MariaReplyDao implements ReplyDao {
 	public int replyCount(int bno) throws Exception {
 		return sqlSession.selectOne(namespace+".replyCount", bno);
 	}
+
+	@Override
+	public Reply getReply(int rno) throws Exception {
+		return sqlSession.selectOne(namespace+".getReply", rno);
+	}
 }
